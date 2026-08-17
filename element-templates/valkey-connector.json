@@ -287,6 +287,7 @@
       "type": "String",
       "group": "operation",
       "description": "Valkey key.",
+      "feel": "optional",
       "binding": {
         "type": "zeebe:input",
         "name": "key"
@@ -329,6 +330,7 @@
       "label": "newKey",
       "type": "String",
       "group": "operation",
+      "feel": "optional",
       "description": "Enter New Key to Rename",
       "binding": {
         "type": "zeebe:input",
@@ -347,6 +349,7 @@
       "label": "Value",
       "type": "String",
       "group": "operation",
+      "feel": "optional",
       "description": "Value to store. Used for SET.",
       "binding": {
         "type": "zeebe:input",
@@ -373,6 +376,7 @@
       "label": "Expiration (seconds)",
       "type": "Number",
       "group": "operation",
+      "feel": "optional",
       "description": "Optional expiration time in seconds. The key will automatically expire after this duration.",
       "binding": {
         "type": "zeebe:input",
@@ -394,6 +398,7 @@
       "label": "Field",
       "type": "String",
       "group": "operation",
+      "feel": "optional",
       "binding": {
         "type": "zeebe:input",
         "name": "field"
@@ -414,6 +419,7 @@
       "label": "amount",
       "type": "String",
       "group": "operation",
+      "feel": "optional",
       "binding": {
         "type": "zeebe:input",
         "name": "amount"
@@ -432,6 +438,7 @@
     {
       "id": "channel",
       "label": "Channel",
+      "feel": "optional",
       "type": "String",
       "group": "operation",
       "description": "Valkey Pub/Sub channel to subscribe to.",
@@ -455,6 +462,7 @@
       "label": "Message",
       "type": "Text",
       "group": "operation",
+      "feel": "optional",
       "binding": {
         "type": "zeebe:input",
         "name": "message"
@@ -475,6 +483,7 @@
       "label": "Pattern",
       "type": "String",
       "group": "operation",
+      "feel": "optional",
       "description": "Optional pattern such as user:*",
       "binding": {
         "type": "zeebe:input",
@@ -491,6 +500,7 @@
       "type": "String",
       "group": "operation",
       "value": "0",
+      "feel": "optional",
       "binding": {
         "type": "zeebe:input",
         "name": "cursor"
@@ -506,6 +516,7 @@
       "type": "Number",
       "group": "operation",
       "value": 100,
+      "feel": "optional",
       "binding": {
         "type": "zeebe:input",
         "name": "count"
