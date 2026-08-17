@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 @OutboundConnector(
         name = "Valkey Connector",
-//        inputVariables = {"ValkeyRequest"},
         type = "io.camunda:valkey:1"
 )
 @ElementTemplate(
@@ -29,7 +28,6 @@ import org.slf4j.LoggerFactory;
         version = 1,
         icon = "icon.svg",
         description = "Valkey connector for standalone and cluster deployments"
-//        inputDataClass = ValkeyRequest.class
 
 )
 public class ValkeyConnectorFunction implements OutboundConnectorProvider {

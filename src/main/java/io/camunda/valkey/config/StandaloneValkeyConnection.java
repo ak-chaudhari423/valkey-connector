@@ -23,13 +23,13 @@ public class StandaloneValkeyConnection {
 
     private RedisURI createUri(ValkeyRequest request) {
 
-//        RedisURI.Builder builder = RedisURI.builder()
-//                .withHost(request.host()+request.port());
-////                .withPort(request.port());
-
         RedisURI.Builder builder = RedisURI.builder()
-                .withHost("127.0.0.1")
-                .withPort(6379);
+                .withHost(request.host()+request.port())
+                .withPort(request.port());
+
+//        RedisURI.Builder builder = RedisURI.builder()
+//                .withHost("127.0.0.1")
+//                .withPort(6379);
 
         if (request.username() != null
                 && !request.username().isBlank()
