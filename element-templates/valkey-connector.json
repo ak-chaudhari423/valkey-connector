@@ -1,0 +1,593 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "valkey-connector",
+  "id": "io.camunda.valkey.connector.v1",
+  "version": 5,
+  "description": "Connect to Valkey in standalone or cluster mode and perform key-value operations.",
+  "category": {
+    "id": "connectors",
+    "name": "Connectors"
+  },
+  "appliesTo": [
+    "bpmn:Task"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "groups": [
+    {
+      "id": "connection",
+      "label": "Connection"
+    },
+    {
+      "id": "authentication",
+      "label": "Authentication"
+    },
+    {
+      "id": "operation",
+      "label": "Operation"
+    },
+    {
+      "id": "output",
+      "label": "Response mapping"
+    },
+    {
+      "id": "errors",
+      "label": "Error handling"
+    },
+    {
+      "id": "retries",
+      "label": "Retries"
+    }
+  ],
+  "properties": [
+    {
+      "type": "Hidden",
+      "value": "io.camunda:valkey:1",
+      "binding": {
+        "type": "zeebe:taskDefinition",
+        "property": "type"
+      }
+    },
+    {
+      "id": "connectionType",
+      "label": "Connection Type",
+      "type": "Dropdown",
+      "value": "STANDALONE",
+      "group": "connection",
+      "choices": [
+        {
+          "name": "Standalone",
+          "value": "STANDALONE"
+        },
+        {
+          "name": "Cluster",
+          "value": "CLUSTER"
+        }
+      ],
+      "binding": {
+        "type": "zeebe:input",
+        "name": "connectionType"
+      }
+    },
+    {
+      "id": "host",
+      "label": "Host",
+      "type": "String",
+      "group": "connection",
+      "description": "Valkey hostname or IP address.",
+      "value": "localhost",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "host"
+      },
+      "condition": {
+        "property": "connectionType",
+        "equals": "STANDALONE"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "label": "Port",
+      "type": "String",
+      "group": "connection",
+      "description": "Valkey port.",
+      "value": "6379",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "port"
+      },
+      "condition": {
+        "property": "connectionType",
+        "equals": "STANDALONE"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "label": "Cluster Nodes",
+      "type": "String",
+      "group": "connection",
+      "description": "Comma-separated Valkey cluster nodes. Example: node1:6379,node2:6379,node3:6379",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "clusterNodes"
+      },
+      "condition": {
+        "property": "connectionType",
+        "equals": "CLUSTER"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "label": "Username",
+      "type": "String",
+      "group": "authentication",
+      "description": "Valkey ACL username. Optional.",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "username"
+      }
+    },
+    {
+      "label": "Password",
+      "type": "String",
+      "group": "authentication",
+      "description": "Valkey password.",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "password"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "label": "SSL/TLS",
+      "type": "Boolean",
+      "group": "authentication",
+      "value": false,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "ssl"
+      }
+    },
+    {
+      "id": "operation",
+      "label": "Operation",
+      "type": "Dropdown",
+      "group": "operation",
+      "value": "get",
+      "choices": [
+        {
+          "name": "Get Value (GET)",
+          "value": "get"
+        },
+        {
+          "name": "Set Value (SET)",
+          "value": "set"
+        },
+        {
+          "name": "Delete Key (DELETE)",
+          "value": "delete"
+        },
+        {
+          "name": "Check Key Exists (EXISTS)",
+          "value": "exists"
+        },
+        {
+          "name": "Set Key Expiration (EXPIRE)",
+          "value": "expire"
+        },
+        {
+          "name": "Get Remaining Expiration (TTL)",
+          "value": "ttl"
+        },
+        {
+          "name": "Increment Value by 1 (INCR)",
+          "value": "incr"
+        },
+        {
+          "name": "Decrement Value by 1 (DECR)",
+          "value": "decr"
+        },
+        {
+          "name": "Get Hash Field (HGET)",
+          "value": "hget"
+        },
+        {
+          "name": "Set Hash Field (HSET)",
+          "value": "hset"
+        },
+        {
+          "name": "Get All Hash Fields (HGETALL)",
+          "value": "hgetall"
+        },
+        {
+          "name": "Delete Hash Field (HDEL)",
+          "value": "hdel"
+        },
+        {
+          "name": "Add to List from Left (LPUSH)",
+          "value": "lpush"
+        },
+        {
+          "name": "Add to List from Right (RPUSH)",
+          "value": "rpush"
+        },
+        {
+          "name": "Remove First List Item (LPOP)",
+          "value": "lpop"
+        },
+        {
+          "name": "Remove Last List Item (RPOP)",
+          "value": "rpop"
+        },
+        {
+          "name": "Add Member to Set (SADD)",
+          "value": "sadd"
+        },
+        {
+          "name": "Remove Member from Set (SREM)",
+          "value": "srem"
+        },
+        {
+          "name": "Get All Set Members (SMEMBERS)",
+          "value": "smembers"
+        },
+        {
+          "name": "Check Set Membership (SISMEMBER)",
+          "value": "sismember"
+        },
+        {
+          "name": "Scan Keys (SCAN)",
+          "value": "scan"
+        },
+        {
+          "name": "Get Key Data Type (TYPE)",
+          "value": "type"
+        },
+        {
+          "name": "Rename Key (RENAME)",
+          "value": "rename"
+        },
+        {
+          "name": "Increment Value by Amount (INCRBY)",
+          "value": "incrby"
+        },
+        {
+          "name": "Decrement Value by Amount (DECRBY)",
+          "value": "decrby"
+        },
+        {
+          "name": "Publish Message (PUBLISH)",
+          "value": "publish"
+        },
+        {
+          "name": "Subscribe to Channel (SUBSCRIBE)",
+          "value": "subscribe"
+        }
+      ],
+      "constraints": {
+        "notEmpty": true
+      },
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "operation"
+      }
+    },
+    {
+      "id": "key",
+      "label": "Key",
+      "type": "String",
+      "group": "operation",
+      "description": "Valkey key.",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "key"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "get",
+          "set",
+          "delete",
+          "exists",
+          "expire",
+          "ttl",
+          "incr",
+          "decr",
+          "hget",
+          "hset",
+          "hgetall",
+          "hdel",
+          "lpush",
+          "rpush",
+          "lpop",
+          "rpop",
+          "sadd",
+          "srem",
+          "smembers",
+          "sismember",
+          "type",
+          "rename",
+          "incrby",
+          "decrby"
+        ]
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "newKey",
+      "label": "newKey",
+      "type": "String",
+      "group": "operation",
+      "description": "Enter New Key to Rename",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "newKey"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "rename"
+      }
+    },
+    {
+      "id": "value",
+      "label": "Value",
+      "type": "String",
+      "group": "operation",
+      "description": "Value to store. Used for SET.",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "value"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "set",
+          "hset",
+          "lpush",
+          "rpush",
+          "sadd",
+          "srem",
+          "sismember"
+        ]
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "expirationSeconds",
+      "label": "Expiration (seconds)",
+      "type": "Number",
+      "group": "operation",
+      "description": "Optional expiration time in seconds. The key will automatically expire after this duration.",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "expirationSeconds"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "set",
+          "expire"
+        ]
+      }
+    },
+    {
+      "id": "hashField",
+      "label": "Field",
+      "type": "String",
+      "group": "operation",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "field"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "hset",
+          "hdel"
+        ]
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "amount",
+      "label": "amount",
+      "type": "String",
+      "group": "operation",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "amount"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "incrby",
+          "decrby"
+        ]
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "channel",
+      "label": "Channel",
+      "type": "String",
+      "group": "operation",
+      "description": "Valkey Pub/Sub channel to subscribe to.",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "channel"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "publish",
+          "subscribe"
+        ]
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "message",
+      "label": "Message",
+      "type": "Text",
+      "group": "operation",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "message"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "publish",
+          "subscribe"
+        ]
+      }
+    },
+    {
+      "id": "scanPattern",
+      "label": "Pattern",
+      "type": "String",
+      "group": "operation",
+      "description": "Optional pattern such as user:*",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "pattern"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "scan"
+      }
+    },
+    {
+      "id": "scanCursor",
+      "label": "Cursor",
+      "type": "String",
+      "group": "operation",
+      "value": "0",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "cursor"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "scan"
+      }
+    },
+    {
+      "id": "count",
+      "label": "Count",
+      "type": "Number",
+      "group": "operation",
+      "value": 100,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "count"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "scan"
+      }
+    },
+    {
+      "label": "Result Variable",
+      "description": "Process variable to store response",
+      "type": "String",
+      "group": "output",
+      "value": "result",
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "resultVariable"
+      }
+    },
+    {
+      "label": "Result Expression",
+      "description": "Expression to map the response into process variables",
+      "type": "Text",
+      "group": "output",
+      "feel": "required",
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "resultExpression"
+      }
+    },
+    {
+      "id": "errorExpression",
+      "label": "Error expression",
+      "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+      "feel": "required",
+      "type": "Text",
+      "group": "errors",
+      "binding": {
+        "key": "errorExpression",
+        "type": "zeebe:taskHeader"
+      }
+    },
+    {
+      "id": "connectionTimeout",
+      "label": "Connection timeout",
+      "description": "Timeout in seconds (0 for infinite)",
+      "group": "retries",
+      "type": "String",
+      "value": "120",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "connectionTimeoutInSeconds"
+      }
+    },
+    {
+      "id": "retryCount",
+      "label": "Retries",
+      "description": "Number of retries",
+      "value": "3",
+      "feel": "optional",
+      "group": "retries",
+      "binding": {
+        "property": "retries",
+        "type": "zeebe:taskDefinition"
+      },
+      "type": "String"
+    },
+    {
+      "id": "retryBackoff",
+      "label": "Retry backoff",
+      "description": "ISO-8601 duration to wait between retries",
+      "value": "PT0S",
+      "group": "retries",
+      "binding": {
+        "key": "retryBackoff",
+        "type": "zeebe:taskHeader"
+      },
+      "type": "String"
+    }
+  ],
+  "icon": {
+    "contents": "data:image/png;base64,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"
+  }
+}
